@@ -1,8 +1,6 @@
 #include "ft_nm.h"
 
-void debug_elf_header(void * f) {
-	Elf64_Ehdr ehdr = *(Elf64_Ehdr *)f;
-
+void debug_elf_header(Elf64_Ehdr ehdr) {
 	printf("e_ident: 0x%x %c %c %c %c", ehdr.e_ident[EI_MAG0], ehdr.e_ident[EI_MAG1], \
 			ehdr.e_ident[EI_MAG2], ehdr.e_ident[EI_MAG3]);
 

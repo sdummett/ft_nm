@@ -26,7 +26,16 @@ int main(int ac, char **av) {
 	//	return 0;
 	//}
 
-	debug_elf_header(f);
+	debug_elf_header(*(Elf64_Ehdr *)(f + 0)) ;
+	unsigned int offset = 22040; // 22040 is an arbitray value that match the offset of the 1st entry of shdr in this program compiled
+	printf("shoff = %d\n", offset);
+
+	printf("//=====================================//\n");
+	for (int i = 0; i < 31; i++) { // 31 is an arbitrary value that match the number of shdr of this program compiled
+		printf("[%d]\n", i);
+		debug_elf_section(*(Elf64_Shdr *)(f + offset + (i * 64)));
+		printf("//=====================================//\n");
+	}
 
 	munmap(f, sb.st_size);
 	close(fd);

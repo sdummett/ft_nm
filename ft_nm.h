@@ -12,6 +12,9 @@
 #include <stdio.h>
 
 // debug_elf_header.c
-void debug_elf_header(void * f);
+void debug_elf_header(Elf64_Ehdr ehdr);
+
+// debug_elf_section.c
+void debug_elf_section(Elf64_Shdr shdr);
 
 #endif
