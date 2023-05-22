@@ -21,6 +21,7 @@ CC		=	cc
 SRCS		=	srcs/main.c \
 				srcs/debug_elf_header.c \
 				srcs/debug_elf_section.c \
+				srcs/debug_elf_symtab.c \
 
 # **************************************************************************** #
 #       RULES                                                                  #

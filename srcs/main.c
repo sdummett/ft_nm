@@ -26,15 +26,39 @@ int main(int ac, char **av) {
 	//	return 0;
 	//}
 
-	debug_elf_header(*(Elf64_Ehdr *)(f + 0)) ;
-	unsigned int offset = 22040; // 22040 is an arbitray value that match the offset of the 1st entry of shdr in this program compiled
-	printf("shoff = %d\n", offset);
+	Elf64_Ehdr ehdr = *(Elf64_Ehdr *)f;
+	debug_elf_header(ehdr);
 
+	Elf64_Shdr shstrtb = *(Elf64_Shdr *)(f + ehdr.e_shoff + (ehdr.e_shstrndx * ehdr.e_shentsize));
+	printf(">> SHSTRTAB <<\n");
+	debug_elf_section(shstrtb);
+	printf(">> ======== <<\n");
 	printf("//=====================================//\n");
+
+	Elf64_Shdr symtab_hdr;
 	for (int i = 0; i < 31; i++) { // 31 is an arbitrary value that match the number of shdr of this program compiled
+		symtab_hdr = *(Elf64_Shdr *)(f + ehdr.e_shoff + (i * ehdr.e_shentsize));
+		if (symtab_hdr.sh_type == SHT_SYMTAB) {
+			printf(">>>>> SHT_SYMTAB <<<<<\n");
+			printf("[%d]\n", i);
+			printf("name of the section: %s\n", f + shstrtb.sh_offset + symtab_hdr.sh_name);
+			//debug_elf_section(*(Elf64_Shdr *)(f + offset + (i * 64)));
+			debug_elf_section(symtab_hdr);
+
+			printf("//=====================================//\n");
+			break;
+		}
+	}
+
+
+	printf("sh_link + sh_info = %d + %d = %d\n", symtab_hdr.sh_link, symtab_hdr.sh_info, symtab_hdr.sh_link + symtab_hdr.sh_info);
+	for (int i = 0; i < symtab_hdr.sh_link; i++) { // how to get the real entries num of the symtab ?
+		printf(">>> SYMTAB <<<\n");
 		printf("[%d]\n", i);
-		debug_elf_section(*(Elf64_Shdr *)(f + offset + (i * 64)));
-		printf("//=====================================//\n");
+		Elf64_Sym symtab = *(Elf64_Sym *)(f + (symtab_hdr.sh_offset + (i * symtab_hdr.sh_entsize)));
+		printf("name of the symbol: %s\n", f + 0x00005f30 + symtab.st_name);
+		debug_elf_symtab(symtab);
+		printf(">>>>>>><<<<<<<\n");
 	}
 
 	munmap(f, sb.st_size);

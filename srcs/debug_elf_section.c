@@ -55,7 +55,7 @@ void debug_elf_section(Elf64_Shdr shdr) {
 	}
 
 
-	printf("sh_addr: 0%x\n", shdr.sh_addr);
+	printf("sh_addr: 0x%x\n", shdr.sh_addr);
 	printf("sh_offset: 0x%x (%d bytes)\n", shdr.sh_offset, shdr.sh_offset);
 	printf("sh_size: 0x%x (%d bytes)\n", shdr.sh_size, shdr.sh_size);
 	printf("sh_entsize: 0x%x (%d bytes)\n", shdr.sh_entsize, shdr.sh_entsize);
