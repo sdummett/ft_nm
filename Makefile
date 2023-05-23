@@ -13,14 +13,14 @@ CC		=	cc
 #       FLAGS                                                                  #
 # **************************************************************************** #
 #RMFLAGS		=	-rf
-#CFLAGS		=	-Wall -Wextra -Werror
+CFLAGS		=	-Wall -Wextra -Werror
 
 # **************************************************************************** #
 #       SOURCES                                                                #
 # **************************************************************************** #
 SRCS		=	srcs/main.c \
 				srcs/debug_elf_header.c \
-				srcs/debug_elf_section.c \
+				srcs/debug_elf_section_header.c \
 				srcs/debug_elf_symtab.c \
 
 # **************************************************************************** #

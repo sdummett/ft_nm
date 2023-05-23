@@ -1,6 +1,6 @@
 #include "ft_nm.h"
 
-void debug_elf_section(Elf64_Shdr shdr) {
+void debug_elf_section_header(Elf64_Shdr shdr) {
 	printf("sh_name: %d\n", shdr.sh_name);
 
 	printf("sh_type: ");
@@ -55,10 +55,10 @@ void debug_elf_section(Elf64_Shdr shdr) {
 	}
 
 
-	printf("sh_addr: 0x%x\n", shdr.sh_addr);
-	printf("sh_offset: 0x%x (%d bytes)\n", shdr.sh_offset, shdr.sh_offset);
-	printf("sh_size: 0x%x (%d bytes)\n", shdr.sh_size, shdr.sh_size);
-	printf("sh_entsize: 0x%x (%d bytes)\n", shdr.sh_entsize, shdr.sh_entsize);
+	printf("sh_addr: 0x%lx\n", shdr.sh_addr);
+	printf("sh_offset: 0x%lx (%ld bytes)\n", shdr.sh_offset, shdr.sh_offset);
+	printf("sh_size: 0x%lx (%ld bytes)\n", shdr.sh_size, shdr.sh_size);
+	printf("sh_entsize: 0x%lx (%ld bytes)\n", shdr.sh_entsize, shdr.sh_entsize);
 
 	printf("sh_flags: ");
 	switch(shdr.sh_flags) {
@@ -75,11 +75,11 @@ void debug_elf_section(Elf64_Shdr shdr) {
 			printf("SHF_MASKPROC\n");
 			break;
 		default:
-			printf("not found, value: %d\n", shdr.sh_flags);
+			printf("not found, value: %ld\n", shdr.sh_flags);
 	}
 
 	printf("sh_link: %d\n", shdr.sh_link);
 	printf("sh_info: %d\n", shdr.sh_info);
-	printf("sh_addralign: 0x%x (%d bytes)\n", shdr.sh_addralign, shdr.sh_addralign);
+	printf("sh_addralign: 0x%lx (%ld bytes)\n", shdr.sh_addralign, shdr.sh_addralign);
 
 }

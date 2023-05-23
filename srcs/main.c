@@ -18,7 +18,7 @@ int main(int ac, char **av) {
 		perror("couldnt get file size");
 		return 0;
 	}
-	printf("File size of '%s' is %d bytes\n", av[1], sb.st_size);
+	printf("File size of '%s' is %ld bytes\n", av[1], sb.st_size);
 
 	void *f = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
 	//if (f == -1) {
@@ -31,7 +31,7 @@ int main(int ac, char **av) {
 
 	Elf64_Shdr shstrtb = *(Elf64_Shdr *)(f + ehdr.e_shoff + (ehdr.e_shstrndx * ehdr.e_shentsize));
 	printf(">> SHSTRTAB <<\n");
-	debug_elf_section(shstrtb);
+	debug_elf_section_header(shstrtb);
 	printf(">> ======== <<\n");
 	printf("//=====================================//\n");
 
@@ -41,9 +41,9 @@ int main(int ac, char **av) {
 		if (symtab_hdr.sh_type == SHT_SYMTAB) {
 			printf(">>>>> SHT_SYMTAB <<<<<\n");
 			printf("[%d]\n", i);
-			printf("name of the section: %s\n", f + shstrtb.sh_offset + symtab_hdr.sh_name);
+			printf("name of the section: %s\n", (char *)(f + shstrtb.sh_offset + symtab_hdr.sh_name));
 			//debug_elf_section(*(Elf64_Shdr *)(f + offset + (i * 64)));
-			debug_elf_section(symtab_hdr);
+			debug_elf_section_header(symtab_hdr);
 
 			printf("//=====================================//\n");
 			break;
@@ -52,11 +52,11 @@ int main(int ac, char **av) {
 
 
 	printf("sh_link + sh_info = %d + %d = %d\n", symtab_hdr.sh_link, symtab_hdr.sh_info, symtab_hdr.sh_link + symtab_hdr.sh_info);
-	for (int i = 0; i < symtab_hdr.sh_link; i++) { // how to get the real entries num of the symtab ?
+	for (unsigned int i = 0; i < symtab_hdr.sh_link; i++) { // how to get the real entries num of the symtab ?
 		printf(">>> SYMTAB <<<\n");
 		printf("[%d]\n", i);
 		Elf64_Sym symtab = *(Elf64_Sym *)(f + (symtab_hdr.sh_offset + (i * symtab_hdr.sh_entsize)));
-		printf("name of the symbol: %s\n", f + 0x00005f30 + symtab.st_name);
+		printf("name of the symbol: %s\n", (char *)(f + 0x00005f30 + symtab.st_name));
 		debug_elf_symtab(symtab);
 		printf(">>>>>>><<<<<<<\n");
 	}

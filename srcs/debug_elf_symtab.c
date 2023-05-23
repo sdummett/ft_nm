@@ -2,8 +2,8 @@
 
 void debug_elf_symtab(Elf64_Sym symtab) {
 	printf("st_name: %d\n", symtab.st_name);
-	printf("st_value: 0x%x\n", symtab.st_value);
-	printf("st_size: %d\n", symtab.st_size);
+	printf("st_value: 0x%lx\n", symtab.st_value);
+	printf("st_size: %ld\n", symtab.st_size);
 
 	printf("st_info: ");
 	switch(symtab.st_info) {

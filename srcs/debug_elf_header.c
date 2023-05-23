@@ -1,7 +1,7 @@
 #include "ft_nm.h"
 
 void debug_elf_header(Elf64_Ehdr ehdr) {
-	printf("e_ident: 0x%x %c %c %c %c", ehdr.e_ident[EI_MAG0], ehdr.e_ident[EI_MAG1], \
+	printf("e_ident: 0x%x %c %c %c", ehdr.e_ident[EI_MAG0], ehdr.e_ident[EI_MAG1], \
 			ehdr.e_ident[EI_MAG2], ehdr.e_ident[EI_MAG3]);
 
 	switch(ehdr.e_ident[EI_CLASS]) {
@@ -174,9 +174,9 @@ void debug_elf_header(Elf64_Ehdr ehdr) {
 	else
 		printf("not found, value: %d\n", ehdr.e_version);
 
-	printf("e_entry: 0x%x\n", ehdr.e_entry);
-	printf("e_phoff: %d bytes\n", ehdr.e_phoff);
-	printf("e_shoff: %d bytes\n", ehdr.e_shoff);
+	printf("e_entry: 0x%lx\n", ehdr.e_entry);
+	printf("e_phoff: %ld bytes\n", ehdr.e_phoff);
+	printf("e_shoff: %ld bytes\n", ehdr.e_shoff);
 	printf("e_flags: 0x%x\n", ehdr.e_flags);
 	printf("e_ehsize: %d bytes\n", ehdr.e_ehsize);
 	printf("e_phentize: %d bytes\n", ehdr.e_phentsize);

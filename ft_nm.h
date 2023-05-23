@@ -15,7 +15,7 @@
 void debug_elf_header(Elf64_Ehdr);
 
 // debug_elf_section.c
-void debug_elf_section(Elf64_Shdr);
+void debug_elf_section_header(Elf64_Shdr);
 
 // debug_elf_symtab.c
 void debug_elf_symtab(Elf64_Sym);
