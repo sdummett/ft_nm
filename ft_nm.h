@@ -11,6 +11,12 @@
 // tools
 #include <stdio.h>
 
+// get_section_header.c
+Elf64_Shdr *get_section_header(void *f, int idx);
+
+//print_symtab_entries.c
+void print_symtab_entries(void *, Elf64_Shdr *);
+
 // debug_elf_header.c
 void debug_elf_header(Elf64_Ehdr);
 

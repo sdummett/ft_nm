@@ -5,8 +5,27 @@ void debug_elf_symtab(Elf64_Sym symtab) {
 	printf("st_value: 0x%lx\n", symtab.st_value);
 	printf("st_size: %ld\n", symtab.st_size);
 
-	printf("st_info: ");
-	switch(symtab.st_info) {
+	printf("st_info: \n");
+	switch(ELF64_ST_BIND(symtab.st_info)) {
+		case STB_LOCAL:
+			printf("STB_LOCAL\n");
+			break;
+		case STB_GLOBAL:
+			printf("STB_GLOBAL\n");
+			break;
+		case STB_WEAK:
+			printf("STB_WEAK\n");
+			break;
+		case STB_LOPROC:
+			printf("STB_LOPROC\n");
+			break;
+		case STB_HIPROC:
+			printf("STB_HIPROC\n");
+			break;
+		default:
+			printf("STB not found, value : %d\n", symtab.st_info);
+	}
+	switch(ELF64_ST_TYPE(symtab.st_info)) {
 		case STT_NOTYPE:
 			printf("STT_NOTYPE\n");
 			break;
@@ -28,27 +47,13 @@ void debug_elf_symtab(Elf64_Sym symtab) {
 		case STT_HIPROC:
 			printf("STT_HIPROC\n");
 			break;
-		//case STB_LOCAL:
-		//	printf("STB_LOCAL\n");
-		//	break;
-		//case STB_GLOBAL:
-		//	printf("STB_GLOBAL\n");
-		//	break;
-		//case STB_WEAK:
-		//	printf("STB_WEAK\n");
-		//	break;
-		//case STB_LOPROC:
-		//	printf("STB_LOPROC\n");
-		//	break;
-		//case STB_HIPROC:
-		//	printf("STB_HIPROC\n");
-		//	break;
 		default:
-			printf("not found, value : %d\n", symtab.st_info);
+			printf("STT not found, value : %d\n", symtab.st_info);
 	}
 
+
 	printf("st_other: ");
-	switch(symtab.st_other) {
+	switch(ELF64_ST_VISIBILITY(symtab.st_other)) {
 		case STV_DEFAULT:
 			printf("STV_DEFAULT\n");
 			break;
