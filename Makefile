@@ -1,52 +1,57 @@
 # **************************************************************************** #
 #       TITLE                                                                  #
 # **************************************************************************** #
-NAME		=	ft_nm
+NAME = ft_nm
 
 # **************************************************************************** #
 #       COMMANDS                                                               #
 # **************************************************************************** #
-CC		=	cc
-#RM			=	rm
+CC = cc
+#RM = rm
 
 # **************************************************************************** #
 #       FLAGS                                                                  #
 # **************************************************************************** #
-#RMFLAGS		=	-rf
-CFLAGS		=	-Wall -Wextra -Werror
+#RMFLAGS = -rf
+CFLAGS = -Wall -Wextra -Werror
 
 # **************************************************************************** #
 #       SOURCES                                                                #
 # **************************************************************************** #
-SRCS		=	srcs/main.c \
-			srcs/print_symtab_entries.c \
-			srcs/get_section_header.c \
-			srcs/debug_elf_header.c \
-			srcs/debug_elf_section_header.c \
-			srcs/debug_elf_symtab.c \
+SRCS = srcs/main.c \
+       srcs/print_symtab_entries.c \
+       srcs/get_section_header.c \
+       srcs/debug_elf_header.c \
+       srcs/debug_elf_section_header.c \
+       srcs/debug_elf_symtab.c
 
 # **************************************************************************** #
 #       RULES                                                                  #
 # **************************************************************************** #
-OBJS		=	$(SRCS:.c=.o)
+OBJS = $(addprefix objs/,$(SRCS:.c=.o))
+OBJ_DIRS = $(sort $(dir $(OBJS)))
 
-%.o			:	%.c
-				$(CC) -I. -c $(CFLAGS) $< -o $@
+objs/%.o : %.c | $(OBJ_DIRS)
+	$(CC) -I. -c $(CFLAGS) $< -o $@
 
-$(NAME)		:	$(OBJS)
-				$(CC) $(CLAGS) $(OBJS) -o $(NAME)
+$(NAME) : $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-all			:	$(NAME)
+$(OBJ_DIRS):
+	mkdir -p $@
 
-clean		:
-				rm -f $(OBJS)
+all: $(NAME)
 
-fclean		:	clean
-				rm -f ft_nm
+clean:
+	rm -rf objs
 
-re			:	fclean all
+fclean: clean
+	rm -f $(NAME)
+
+re: fclean all
 
 # **************************************************************************** #
 #       PHONY                                                                  #
 # **************************************************************************** #
-.PHONY		:	all clean fclean re test
+.PHONY: all clean fclean re test
+
