@@ -18,7 +18,7 @@ int main(int ac, char **av) {
 		perror("couldnt get file size");
 		return 0;
 	}
-	printf("File size of '%s' is %ld bytes\n", av[1], sb.st_size);
+//	printf("File size of '%s' is %ld bytes\n", av[1], sb.st_size);
 
 	void *f = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
 	//if (f == -1) {
@@ -27,7 +27,7 @@ int main(int ac, char **av) {
 	//}
 
 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)f;
-	debug_elf_header(*ehdr);
+//	debug_elf_header(*ehdr);
 
 	for (int i = 0; i < ehdr->e_shnum; i++) {
 		Elf64_Shdr *symtab_hdr = get_section_header(f, i);
