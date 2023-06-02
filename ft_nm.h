@@ -30,4 +30,8 @@ void debug_elf_section_header(Elf64_Shdr);
 // debug_elf_symtab.c
 void debug_elf_symtab(Elf64_Sym);
 
+// debug_elf_symbol.c
+void debug_sh_type_sh_flags(void *f, Elf64_Sym *sym);
+void debug_st_info_st_other(Elf64_Sym *sym);
+
 #endif

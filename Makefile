@@ -25,6 +25,7 @@ SRCS = srcs/main.c \
        srcs/debug_elf_header.c \
        srcs/debug_elf_section_header.c \
        srcs/debug_elf_symtab.c \
+	   srcs/debug_elf_symbol.c \
 
 # **************************************************************************** #
 #       RULES                                                                  #
