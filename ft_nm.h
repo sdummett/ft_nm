@@ -10,6 +10,10 @@
 
 // tools
 #include <stdio.h>
+#include <string.h>
+
+// get_symbol_type.c
+char get_symbol_type(void *f, Elf64_Sym *sym);
 
 // get_section_header.c
 Elf64_Shdr *get_section_header(void *f, int idx);

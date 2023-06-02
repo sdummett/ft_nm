@@ -1,3 +1,4 @@
 ft_nm
 *.o
 *.swp
+.vscode

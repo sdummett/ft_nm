@@ -21,9 +21,10 @@ CFLAGS = -Wall -Wextra -Werror
 SRCS = srcs/main.c \
        srcs/print_symtab_entries.c \
        srcs/get_section_header.c \
+	   srcs/get_symbol_type.c \
        srcs/debug_elf_header.c \
        srcs/debug_elf_section_header.c \
-       srcs/debug_elf_symtab.c
+       srcs/debug_elf_symtab.c \
 
 # **************************************************************************** #
 #       RULES                                                                  #
