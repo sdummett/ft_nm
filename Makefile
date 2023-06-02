@@ -43,6 +43,9 @@ $(OBJ_DIRS):
 
 all: $(NAME)
 
+debug: CFLAGS += -g3 -DDEBUG
+debug: $(NAME)
+
 clean:
 	rm -rf objs
 
@@ -54,5 +57,4 @@ re: fclean all
 # **************************************************************************** #
 #       PHONY                                                                  #
 # **************************************************************************** #
-.PHONY: all clean fclean re test
-
+.PHONY: all clean fclean re test debug
