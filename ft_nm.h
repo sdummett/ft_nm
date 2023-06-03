@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <elf.h>
+#include <stdbool.h>
 
 // tools
 #include <stdio.h>
