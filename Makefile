@@ -26,6 +26,11 @@ SRCS = srcs/main.c \
        srcs/debug_elf_section_header.c \
        srcs/debug_elf_symtab.c \
 	   srcs/debug_elf_symbol.c \
+	   srcs/printfmt.c \
+	   srcs/itoascii.c \
+	   srcs/utoascii.c \
+	   srcs/utohex.c \
+	   srcs/stringutils.c \
 
 # **************************************************************************** #
 #       RULES                                                                  #

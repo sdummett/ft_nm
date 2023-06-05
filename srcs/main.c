@@ -8,6 +8,10 @@
 #define OPTION_ERROR (1 << 6)
 
 // DONT FORGET STDERR WHILE PARSING OPTION
+// WRITE UTILS FUNCTIONS
+// - printf with some specifiers and a specific fd
+// --> printf(FD, "FORMAT", va_args);
+// --> specifiers: %c %s %p %d %u %x
 
 bool is_long_opt(char *arg) {
 	return (arg[0] != '\0' && arg[1] != '\0' && arg[0] == '-' && arg[1] == '-');
@@ -18,7 +22,7 @@ bool is_short_opt(char *arg) {
 
 // Define the structure to hold the option data
 typedef struct {
-    char short_opt;
+    const char short_opt;
     const char* long_opt;
 } Option;
 

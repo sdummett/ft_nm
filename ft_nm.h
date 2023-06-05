@@ -8,10 +8,26 @@
 #include <stdlib.h>
 #include <elf.h>
 #include <stdbool.h>
+#include <stdarg.h>
 
 // tools
 #include <stdio.h>
 #include <string.h>
+
+// printfmt.c
+int printfmt(int fd, char *fmt, ...);
+
+// stringutils.c
+int sstrlen(char *str);
+
+// utohex.c
+char	*utohex(unsigned long nb);
+
+// utoasc.c
+char	*utoascii(unsigned int n);
+
+// itoascii.c
+char	*itoascii(int n);
 
 // get_symbol_type.c
 char get_symbol_type(void *f, Elf64_Sym *sym);
