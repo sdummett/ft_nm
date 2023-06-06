@@ -75,7 +75,6 @@ void process_long_opt(char *arg, char *opts, char *progname) {
     }
 	set_options(opts, OPTION_ERROR);
 	// // stderr
-	// printf("%s invalid option -- '%s'\n",progname, arg);
 	printf("%s: unrecognized option '%s'\n", progname, arg);
 }
 
@@ -164,23 +163,22 @@ void process_file(char *filename, char *opts) {
 	(void)opts;
 	int fd = open(filename, O_RDONLY);
 	if (fd == -1) {
-		perror(filename); //perror forbidden
+		printerror(filename);
 		return;
 	}
 
 	struct stat sb;
 
 	if (fstat(fd, &sb) == -1) {
-		perror("couldnt get file size"); // perror forbidden
+		printerror("fstat");
 		return;
 	}
-	//	printf("File size of '%s' is %ld bytes\n", av[1], sb.st_size);
 
 	void *f = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-	// if (f == -1) {
-	//	perror("mmap");
-	//	return 0;
-	// }
+	if (f == MAP_FAILED) {
+		printerror("mmap");
+		return;
+	}
 
 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)f;
 	//	debug_elf_header(*ehdr);
@@ -199,7 +197,7 @@ void process_file(char *filename, char *opts) {
 }
 
 int main(int ac, char **av) {
-	char opts;
+	char opts = 0;
 	get_opt(ac, av, &opts);
 
 	if (is_option_set(&opts, OPTION_A))

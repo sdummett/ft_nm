@@ -9,16 +9,21 @@
 #include <elf.h>
 #include <stdbool.h>
 #include <stdarg.h>
+#include <errno.h>
 
 // tools
 #include <stdio.h>
 #include <string.h>
 
 // printfmt.c
+// TODO: return value of printfmt is incorrect
 int printfmt(int fd, char *fmt, ...);
 
 // stringutils.c
-int sstrlen(char *str);
+int stringlen(char *str);
+void printerror(const char* message);
+const char* stringerror(int errnum);
+int stringcmp(const char* str1, const char* str2);
 
 // utohex.c
 char	*utohex(unsigned long nb);
