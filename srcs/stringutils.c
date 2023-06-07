@@ -322,7 +322,7 @@ char	*utohex(unsigned long nb) {
 
 /* --------------------------------------------------- */
 
-int printfmt(int fd, char *fmt, ...) {
+void printfmt(int fd, char *fmt, ...) {
 	va_list var;
 	va_start(var, fmt);
 	while (*fmt) {
@@ -342,21 +342,25 @@ int printfmt(int fd, char *fmt, ...) {
 					void *p = va_arg(var, char *);
 					s = utohex((unsigned long)p);
 					write(fd, s, stringlen(s));
+					free(s);
 					break;
 				case 'd':
 					int i = va_arg(var, int);
 					s = itoascii(i);
 					write(fd, s, stringlen(s));
+					free(s);
 					break;
 				case 'u':
 					unsigned int u = va_arg(var, unsigned int);
 					s = utoascii(u);
 					write(fd, s, stringlen(s));
+					free(s);
 					break;
 				case 'x':
 					unsigned int x = va_arg(var, unsigned int);
 					s = utohex((unsigned long)x);
 					write(fd, s, stringlen(s));
+					free(s);
 					break;
 			}
 		}
@@ -364,7 +368,7 @@ int printfmt(int fd, char *fmt, ...) {
 			write(fd, &c, 1);
 	}
 	va_end(var);
-	return 0; // to fix, must return the lenght of the printed string
+	// An improvment of the function is to return the length of the printed string
 }
 
 /* --------------------------------------------------- */
@@ -383,4 +387,75 @@ char	*stringdup(const char *str) {
 	}
 	*(ptr + i) = 0;
 	return (ptr);
+}
+
+/* --------------------------------------------------- */
+
+
+size_t	stringcat(char *dest, const char *src) {
+	unsigned int i = 0;
+
+	while (dest[i] != '\0')
+		i++;
+	while (*src != '\0') {
+		dest[i] = *src;
+		src++;
+		i++;
+	}
+	dest[i] = '\0';
+	return stringlen(dest);
+}
+
+/* --------------------------------------------------- */
+
+void sprintfmt(char *str, char *fmt, ...) {
+	va_list var;
+	va_start(var, fmt);
+	while (*fmt) {
+		char c[2] = {0};
+		c[0] = *fmt++;
+		if (c[0] == '%') {
+			switch (*fmt++) {
+				char *s;
+				case 'c':
+					char c[2] = {0};
+					c[0] = va_arg(var, int);
+					stringcat(str, c);
+					break;
+				case 's':
+					s = va_arg(var, char *);
+					stringcat(str, s);
+					break;
+				case 'p':
+					void *p = va_arg(var, char *);
+					s = utohex((unsigned long)p);
+					stringcat(str, s);
+					free(s);
+					break;
+				case 'd':
+					int i = va_arg(var, int);
+					s = itoascii(i);
+					stringcat(str, s);
+					free(s);
+					break;
+				case 'u':
+					unsigned int u = va_arg(var, unsigned int);
+					s = utoascii(u);
+					stringcat(str, s);
+					free(s);
+					break;
+				case 'x':
+					unsigned int x = va_arg(var, unsigned int);
+					s = utohex((unsigned long)x);
+					stringcat(str, s);
+					free(s);
+					break;
+			}
+		}
+		else
+			stringcat(str, c);
+			// write(fd, &c, 1);
+	}
+	va_end(var);
+	// An improvment of the function is to return the length of the writed string
 }

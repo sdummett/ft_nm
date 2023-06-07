@@ -15,16 +15,15 @@
 #include <stdio.h>
 #include <string.h>
 
-// printfmt.c
-// TODO: return value of printfmt is incorrect
-int printfmt(int fd, char *fmt, ...);
-
 // stringutils.c
 int stringlen(const char *str);
 void printerror(const char* message);
 const char* stringerror(int errnum);
 int stringcmp(const char* str1, const char* str2);
 char *stringdup(const char *str);
+void printfmt(int fd, char *fmt, ...);
+size_t stringcat(char *dest, const char *src);
+void sprintfmt(char *str, char *fmt, ...);
 
 // utohex.c
 char	*utohex(unsigned long nb);
