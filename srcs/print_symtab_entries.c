@@ -26,14 +26,11 @@ void print_symtab_entries(void *f, Elf64_Shdr * symtab_hdr) {
 }
 
 static char* get_symbol_value(Elf64_Sym *sym) {
-
-	// sprintf is forbidden
 	if (sym->st_shndx == SHN_UNDEF)
 		return stringdup("                ");
 	char *str = malloc(128);
 	*str = '\0';
-	// sprintf(str, "%016lx", sym->st_value);
-	sprintfmt(str, "%x", sym->st_value); // TODO: Add padding functionality + support lx spec
+	sprintfmt(str, "%0lx", sym->st_value);
 	return str;
 }
 

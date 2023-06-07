@@ -322,12 +322,77 @@ char	*utohex(unsigned long nb) {
 
 /* --------------------------------------------------- */
 
+void *memoryset(void *s, int c, size_t n) {
+	while (n) {
+		*((unsigned char *)s + n - 1) = (unsigned char)c;
+		n--;
+	}
+	return (s);
+}
+
+/* --------------------------------------------------- */
+
+char* unsignedlong_to_hex_string(unsigned long number) {
+	int length = 0;
+	unsigned long temp = number;
+
+	// Calculate the length of the resulting hexadecimal string
+	do {
+		length++;
+		temp >>= 4;  // Shift right by 4 bits (equivalent to dividing by 16)
+	} while (temp != 0);
+
+	char* str = malloc((length + 1) * sizeof(char));  // Allocate memory for the string
+
+	// Convert the number to a hexadecimal string
+	str[length] = '\0';  // Add null terminator
+
+	// Build the hexadecimal string from right to left
+	while (length-- > 0) {
+		int remainder = number & 0xF;  // Extract the lowest 4 bits
+		str[length] = (remainder < 10) ? ('0' + remainder) : ('a' + remainder - 10);
+		number >>= 4;  // Shift right by 4 bits
+	}
+
+	return str;
+}
+
+/* --------------------------------------------------- */
+
+char* convert_ulong_to_hex(unsigned long number, bool padding) {
+	char* str = unsignedlong_to_hex_string(number);
+
+	if (padding) {
+		int paddingLength = 16 - stringlen(str);
+		if (paddingLength > 0) {
+			char* paddedStr = malloc((16 + 1) * sizeof(char));
+
+			memoryset(paddedStr, '0', paddingLength);
+			paddedStr[paddingLength] = '\0';
+
+			stringcat(paddedStr, str);
+			free(str);
+
+			return paddedStr;
+		}
+	}
+
+	return str;
+}
+
+/* --------------------------------------------------- */
+
 void printfmt(int fd, char *fmt, ...) {
 	va_list var;
 	va_start(var, fmt);
 	while (*fmt) {
 		char c = *fmt++;
 		if (c == '%') {
+			bool padding = false;
+			if (*fmt == '0') {
+				padding = true;
+				fmt++;
+			}
 			switch (*fmt++) {
 				char *s;
 				case 'c':
@@ -362,6 +427,14 @@ void printfmt(int fd, char *fmt, ...) {
 					write(fd, s, stringlen(s));
 					free(s);
 					break;
+				case 'l':
+					if (*fmt++ == 'x') {
+						unsigned int x = va_arg(var, unsigned int);
+						s = convert_ulong_to_hex((unsigned long)x, padding);
+						write(fd, s, stringlen(s));
+						free(s);
+						break;
+					}
 			}
 		}
 		else
@@ -415,6 +488,11 @@ void sprintfmt(char *str, char *fmt, ...) {
 		char c[2] = {0};
 		c[0] = *fmt++;
 		if (c[0] == '%') {
+			bool padding = false;
+			if (*fmt == '0') {
+				padding = true;
+				fmt++;
+			}
 			switch (*fmt++) {
 				char *s;
 				case 'c':
@@ -450,11 +528,18 @@ void sprintfmt(char *str, char *fmt, ...) {
 					stringcat(str, s);
 					free(s);
 					break;
+				case 'l':
+					if (*fmt++ == 'x') {
+						unsigned int x = va_arg(var, unsigned int);
+						s = convert_ulong_to_hex((unsigned long)x, padding);
+						stringcat(str, s);
+						free(s);
+						break;
+					}
 			}
 		}
 		else
 			stringcat(str, c);
-			// write(fd, &c, 1);
 	}
 	va_end(var);
 	// An improvment of the function is to return the length of the writed string

@@ -24,6 +24,9 @@ char *stringdup(const char *str);
 void printfmt(int fd, char *fmt, ...);
 size_t stringcat(char *dest, const char *src);
 void sprintfmt(char *str, char *fmt, ...);
+void *memoryset(void *s, int c, size_t n);
+char* unsignedlong_to_hex_string(unsigned long number);
+char* convert_ulong_to_hex(unsigned long number, bool padding);
 
 // utohex.c
 char	*utohex(unsigned long nb);
