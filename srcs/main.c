@@ -55,7 +55,7 @@ void process_long_opt(char *arg, char *opts, char *progname) {
 	Option *options = get_options(&count);
 
     for (long i = 0; i < count; i++) {
-		if (strcmp(arg + 2, options[i].long_opt) == 0) {
+		if (stringcmp(arg + 2, options[i].long_opt) == 0) {
 			char opt_flag = 0;
 			if (options[i].short_opt == 'a')
 				opt_flag = OPTION_A;
@@ -75,7 +75,7 @@ void process_long_opt(char *arg, char *opts, char *progname) {
     }
 	set_options(opts, OPTION_ERROR);
 	// // stderr
-	printf("%s: unrecognized option '%s'\n", progname, arg);
+	printfmt(STDERR_FILENO, "%s: unrecognized option '%s'\n", progname, arg);
 }
 
 void process_short_opt(char *arg, char *opts, char *progname) {
@@ -83,7 +83,7 @@ void process_short_opt(char *arg, char *opts, char *progname) {
 	int count;
 	Option *options = get_options(&count);
 
-	int arg_len = strlen(arg); //strlen is forbidden
+	int arg_len = stringlen(arg);
 	for (int i = 1; i < arg_len; i++) {
 		for (int j = 0; j < count; j++) {
 			if (arg[i] == options[j].short_opt) {
@@ -106,13 +106,13 @@ void process_short_opt(char *arg, char *opts, char *progname) {
 			else if (j + 1 == count) {
 				set_options(opts, OPTION_ERROR);
 				// // stderr
-				// printf("%s invalid option -- '%s'\n",progname, arg);
-				printf("%s: unrecognized option '%c'\n", progname, arg[i]);
+				// printfmt("%s invalid option -- '%s'\n",progname, arg);
+				printfmt(STDERR_FILENO, "%s: unrecognized option '%c'\n", progname, arg[i]);
 				return;
 			}
 		}
 	}
-	printf("short_opt: %s\n", arg);
+	printfmt(STDERR_FILENO, "short_opt: %s\n", arg);
 }
 
 void get_opt(int ac, char **av, char *opts) {
@@ -137,17 +137,17 @@ void get_opt(int ac, char **av, char *opts) {
 	}
 }
 
-void help(char *progname) {
+void help(char *progname, int fd) {
 	// stderr
-	printf("Usage: %s: [option(s)] [file(s)]\n", progname);
-	printf("List symbols in [file(s)] (a.out by default).\n");
-	printf("The options are: \n");
-	printf("-a, --debug-syms       Display debugger-only symbols\n");
-	printf("-g, --extern-only      Display only external symbols\n");
-	printf("-p, --no-sort          Do not sort the symbols\n");
-	printf("-r, --reverse-sort     Reverse the sense of the sort\n");
-	printf("-u, --undefined-only   Display only undefined symbols\n");
-	printf("-h, --help             Display this information\n");
+	printfmt(fd, "Usage: %s: [option(s)] [file(s)]\n", progname);
+	printfmt(fd, "List symbols in [file(s)] (a.out by default).\n");
+	printfmt(fd, "The options are: \n");
+	printfmt(fd, "-a, --debug-syms       Display debugger-only symbols\n");
+	printfmt(fd, "-g, --extern-only      Display only external symbols\n");
+	printfmt(fd, "-p, --no-sort          Do not sort the symbols\n");
+	printfmt(fd, "-r, --reverse-sort     Reverse the sense of the sort\n");
+	printfmt(fd, "-u, --undefined-only   Display only undefined symbols\n");
+	printfmt(fd, "-h, --help             Display this information\n");
 }
 
 int get_nb_files(int ac, char **av) {
@@ -201,22 +201,22 @@ int main(int ac, char **av) {
 	get_opt(ac, av, &opts);
 
 	if (is_option_set(&opts, OPTION_A))
-		printf("OPTION A SET\n");
+		printfmt(STDERR_FILENO, "OPTION A SET\n");
 	if (is_option_set(&opts, OPTION_G))
-		printf("OPTION G SET\n");
+		printfmt(STDERR_FILENO, "OPTION G SET\n");
 	if (is_option_set(&opts, OPTION_P))
-		printf("OPTION P SET\n");
+		printfmt(STDERR_FILENO, "OPTION P SET\n");
 	if (is_option_set(&opts, OPTION_R))
-		printf("OPTION R SET\n");
+		printfmt(STDERR_FILENO, "OPTION R SET\n");
 	if (is_option_set(&opts, OPTION_U))
-		printf("OPTION U SET\n");
+		printfmt(STDERR_FILENO, "OPTION U SET\n");
 	if (is_option_set(&opts, OPTION_H)) {
-		printf("OPTION_H SET\n");
-		help(*av);
+		printfmt(STDERR_FILENO, "OPTION_H SET\n");
+		help(*av, STDOUT_FILENO);
 		return 0;
 	}
 	if (is_option_set(&opts, OPTION_ERROR)) {
-		help(*av);
+		help(*av, STDERR_FILENO);
 		return 0;
 	}
 

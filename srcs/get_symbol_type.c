@@ -24,65 +24,65 @@ char get_symbol_type(void *f, Elf64_Sym *sym) {
 	char *section_name = (char *)(f + shstrtb->sh_offset + shdr->sh_name);
 	(void)ehdr; (void)shdr;
 
-	if (strcmp(section_name, ".text") == 0 && bind == STB_GLOBAL)
+	if (stringcmp(section_name, ".text") == 0 && bind == STB_GLOBAL)
 		return 'T';
-	else if (strcmp(section_name, ".text") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".text") == 0 && bind == STB_LOCAL)
 		return 't';
-	else if (strcmp(section_name, "completed.0") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, "completed.0") == 0 && bind == STB_GLOBAL)
 		return 'B';
-	else if (strcmp(section_name, "completed.0") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, "completed.0") == 0 && bind == STB_LOCAL)
 		return 'b';
-	else if (strcmp(section_name, ".fini") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".fini") == 0 && bind == STB_GLOBAL)
 		return 'T';
-	else if (strcmp(section_name, ".fini") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".fini") == 0 && bind == STB_LOCAL)
 		return 't';
-	else if (strcmp(section_name, ".data") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".data") == 0 && bind == STB_GLOBAL)
 		return 'D';
-	else if (strcmp(section_name, ".data") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".data") == 0 && bind == STB_LOCAL)
 		return 'd';
-	else if (strcmp(section_name, ".rodata") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".rodata") == 0 && bind == STB_GLOBAL)
 		return 'R';
-	else if (strcmp(section_name, ".rodata") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".rodata") == 0 && bind == STB_LOCAL)
 		return 'r';
-	else if (strcmp(section_name, ".bss") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".bss") == 0 && bind == STB_GLOBAL)
 		return 'B';
-	else if (strcmp(section_name, ".bss") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".bss") == 0 && bind == STB_LOCAL)
 		return 'b';
-	else if (strcmp(section_name, ".init") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".init") == 0 && bind == STB_GLOBAL)
 		return 'T';
-	else if (strcmp(section_name, ".init") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".init") == 0 && bind == STB_LOCAL)
 		return 't';
-	else if (strcmp(section_name, ".fini_array") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".fini_array") == 0 && bind == STB_GLOBAL)
 		return 'D';
-	else if (strcmp(section_name, ".fini_array") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".fini_array") == 0 && bind == STB_LOCAL)
 		return 'd';
-	else if (strcmp(section_name, ".init_array") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".init_array") == 0 && bind == STB_GLOBAL)
 		return 'D';
-	else if (strcmp(section_name, ".init_array") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".init_array") == 0 && bind == STB_LOCAL)
 		return 'd';
-	else if (strcmp(section_name, ".eh_frame") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".eh_frame") == 0 && bind == STB_GLOBAL)
 		return 'R';
-	else if (strcmp(section_name, ".eh_frame") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".eh_frame") == 0 && bind == STB_LOCAL)
 		return 'r';
-	else if (strcmp(section_name, ".dynamic") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".dynamic") == 0 && bind == STB_GLOBAL)
 		return 'D';
-	else if (strcmp(section_name, ".dynamic") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".dynamic") == 0 && bind == STB_LOCAL)
 		return 'd';
-	else if (strcmp(section_name, ".eh_frame_hdr") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".eh_frame_hdr") == 0 && bind == STB_GLOBAL)
 		return 'R';
-	else if (strcmp(section_name, ".eh_frame_hdr") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".eh_frame_hdr") == 0 && bind == STB_LOCAL)
 		return 'r';
-	else if (strcmp(section_name, ".got.plt") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".got.plt") == 0 && bind == STB_GLOBAL)
 		return 'D';
-	else if (strcmp(section_name, ".got.plt") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".got.plt") == 0 && bind == STB_LOCAL)
 		return 'd';
-	else if (strcmp(section_name, ".note.ABI-tag") == 0 && bind == STB_GLOBAL)
+	else if (stringcmp(section_name, ".note.ABI-tag") == 0 && bind == STB_GLOBAL)
 		return 'R';
-	else if (strcmp(section_name, ".note.ABI-tag") == 0 && bind == STB_LOCAL)
+	else if (stringcmp(section_name, ".note.ABI-tag") == 0 && bind == STB_LOCAL)
 		return 'r';
 	
 	else
-		printf("section_name: %s\n", section_name);
+		printfmt(STDERR_FILENO, "section_name: %s\n", section_name);
 	
 	return '?';
 }

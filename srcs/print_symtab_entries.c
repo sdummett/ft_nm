@@ -20,18 +20,18 @@ void print_symtab_entries(void *f, Elf64_Shdr * symtab_hdr) {
 			debug_st_info_st_other(symbol);
 			debug_sh_type_sh_flags(f, symbol);
 		#endif
-		printf("%s %c %s\n", symbol_value, symbol_type, symbol_name);
+		printfmt(STDOUT_FILENO, "%s %c %s\n", symbol_value, symbol_type, symbol_name);
 		free(symbol_value);
 	}
 }
 
 static char* get_symbol_value(Elf64_Sym *sym) {
 
-	// strdup & sprintf is forbidden
+	// sprintf is forbidden
 	if (sym->st_shndx == SHN_UNDEF)
-		return strdup("                ");
+		return stringdup("                ");
 	char *str = malloc(20);
-	sprintf(str, "%016lx", sym->st_value);
+	sprintf(str, "%016lx", sym->st_value); // TODO
 	return str;
 }
 

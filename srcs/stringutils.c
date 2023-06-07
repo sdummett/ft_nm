@@ -1,12 +1,16 @@
 #include "ft_nm.h"
 
-int stringlen(char *str) {
+/* --------------------------------------------------- */
+
+int stringlen(const char *str) {
 	int i = 0;
 
 	while (str && str[i])
 		i++;
 	return i;
 }
+
+/* --------------------------------------------------- */
 
 const char* stringerror(int errnum) {
     static const char* error_table[] = {
@@ -154,11 +158,14 @@ const char* stringerror(int errnum) {
     return "Unknown error";
 }
 
+/* --------------------------------------------------- */
 
 void printerror(const char* message) {
     int errnum = errno;
     printfmt(STDERR_FILENO, "%s: %s\n", message, stringerror(errnum));
 }
+
+/* --------------------------------------------------- */
 
 int stringcmp(const char* str1, const char* str2) {
     while (*str1 && (*str1 == *str2)) {
@@ -167,4 +174,213 @@ int stringcmp(const char* str1, const char* str2) {
     }
 
     return *(unsigned char*)str1 - *(unsigned char*)str2;
+}
+
+/* --------------------------------------------------- */
+
+static char	*protected_malloc(char *str, int size_n) {
+	str = malloc(sizeof(char) * size_n + 1);
+	if (!str)
+		return (0);
+	str[size_n] = 0;
+	return (str);
+}
+
+/* --------------------------------------------------- */
+
+static int	sizeof_n_i(int n) {
+	int				size;
+	unsigned int	tmp;
+
+	if (n) {
+		if (n < 0) {
+			size = 1;
+			tmp = n * -1;
+		}
+		else {
+			size = 0;
+			tmp = n;
+		}
+		while (tmp) {
+			tmp = tmp / 10;
+			size++;
+		}
+	}
+	else
+		size = 1;
+	return (size);
+}
+
+static void	inttoascii(char *str, long int tmp, int size_n) {
+	if (tmp < 0) {
+		tmp = tmp * -1;
+		str[0] = '-';
+	}
+	while (tmp) {
+		str[size_n--] = tmp % 10 + 48;
+		tmp = tmp / 10;
+	}
+}
+
+char	*itoascii(int n) {
+	int			size_n;
+	char		*str;
+	long int	tmp;
+
+	str = NULL;
+	tmp = n;
+	size_n = sizeof_n_i(n) - 1;
+	str = protected_malloc(str, sizeof_n_i(n));
+	if (n && str)
+		inttoascii(str, tmp, size_n);
+	else if (!n && str)
+		str[size_n] = '0';
+	else
+		return (0);
+	return (str);
+}
+
+/* --------------------------------------------------- */
+
+static int	sizeof_n_u(unsigned int n) {
+	int				size;
+	unsigned int	tmp;
+
+	if (n) {
+		size = 0;
+		tmp = n;
+		while (tmp) {
+			tmp = tmp / 10;
+			size++;
+		}
+	}
+	else
+		size = 1;
+	return (size);
+}
+
+static void	unstoascii(char *str, unsigned long int tmp, int size_n) {
+	while (tmp) {
+		str[size_n--] = tmp % 10 + 48;
+		tmp = tmp / 10;
+	}
+}
+
+char	*utoascii(unsigned int n) {
+	int					size_n;
+	unsigned long int	tmp;
+	char				*str;
+
+	str = NULL;
+	tmp = n;
+	size_n = sizeof_n_u(n) - 1;
+	str = protected_malloc(str, sizeof_n_u(n));
+	if (n && str)
+		unstoascii(str, tmp, size_n);
+	else if (!n && str)
+		str[size_n] = '0';
+	else
+		return (0);
+	return (str);
+}
+
+/* --------------------------------------------------- */
+
+static int	len_str(unsigned long nb) {
+	int	len;
+
+	if (nb == 0)
+		return (1);
+	len = 0;
+	while (nb) {
+		nb = nb / 16;
+		len++;
+	}
+	return (len);
+}
+
+char	*utohex(unsigned long nb) {
+	char	*str;
+	char	*hexbase_low;
+	int		len;
+
+	hexbase_low = "0123456789abcdef";
+	len = len_str(nb);
+	str = (char *)malloc(sizeof(char) * len + 1);
+	if (str == NULL)
+		return (NULL);
+	if (nb == 0)
+		str[0] = '0';
+	str[len] = 0;
+	while (nb) {
+		str[len - 1] = *(hexbase_low + nb % 16);
+		nb = nb / 16;
+		len--;
+	}
+	return (str);
+}
+
+/* --------------------------------------------------- */
+
+int printfmt(int fd, char *fmt, ...) {
+	va_list var;
+	va_start(var, fmt);
+	while (*fmt) {
+		char c = *fmt++;
+		if (c == '%') {
+			switch (*fmt++) {
+				char *s;
+				case 'c':
+					char c = va_arg(var, int);
+					write(fd, &c, 1);
+					break;
+				case 's':
+					s = va_arg(var, char *);
+					write(fd, s, stringlen(s));
+					break;
+				case 'p':
+					void *p = va_arg(var, char *);
+					s = utohex((unsigned long)p);
+					write(fd, s, stringlen(s));
+					break;
+				case 'd':
+					int i = va_arg(var, int);
+					s = itoascii(i);
+					write(fd, s, stringlen(s));
+					break;
+				case 'u':
+					unsigned int u = va_arg(var, unsigned int);
+					s = utoascii(u);
+					write(fd, s, stringlen(s));
+					break;
+				case 'x':
+					unsigned int x = va_arg(var, unsigned int);
+					s = utohex((unsigned long)x);
+					write(fd, s, stringlen(s));
+					break;
+			}
+		}
+		else
+			write(fd, &c, 1);
+	}
+	va_end(var);
+	return 0; // to fix, must return the lenght of the printed string
+}
+
+/* --------------------------------------------------- */
+
+char	*stringdup(const char *str) {
+	int		i;
+	char	*ptr;
+
+	ptr = malloc(sizeof(char) * stringlen(str) + 1);
+	if (!ptr)
+		return (0);
+	i = 0;
+	while (*(str + i)) {
+		*(ptr + i) = *(str + i);
+		i++;
+	}
+	*(ptr + i) = 0;
+	return (ptr);
 }

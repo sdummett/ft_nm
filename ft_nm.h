@@ -20,10 +20,11 @@
 int printfmt(int fd, char *fmt, ...);
 
 // stringutils.c
-int stringlen(char *str);
+int stringlen(const char *str);
 void printerror(const char* message);
 const char* stringerror(int errnum);
 int stringcmp(const char* str1, const char* str2);
+char *stringdup(const char *str);
 
 // utohex.c
 char	*utohex(unsigned long nb);
