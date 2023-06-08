@@ -464,7 +464,6 @@ char	*stringdup(const char *str) {
 
 /* --------------------------------------------------- */
 
-
 size_t	stringcat(char *dest, const char *src) {
 	unsigned int i = 0;
 
@@ -543,4 +542,10 @@ void sprintfmt(char *str, char *fmt, ...) {
 	}
 	va_end(var);
 	// An improvment of the function is to return the length of the writed string
+}
+
+/* --------------------------------------------------- */
+
+bool isuppercase(int c) {
+	return (c >= 'A' && c <= 'Z');
 }

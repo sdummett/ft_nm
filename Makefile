@@ -27,6 +27,7 @@ SRCS = srcs/main.c \
        srcs/debug_elf_symtab.c \
 	   srcs/debug_elf_symbol.c \
 	   srcs/stringutils.c \
+	   srcs/get_opt.c \
 
 # **************************************************************************** #
 #       RULES                                                                  #

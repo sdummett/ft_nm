@@ -1,11 +1,10 @@
 #include "ft_nm.h"
 
 char get_symbol_type(void *f, Elf64_Sym *sym) {
-	(void)f; (void)sym;
 	int bind = ELF64_ST_BIND(sym->st_info);
 	int type = ELF64_ST_TYPE(sym->st_info);
-	(void)bind; (void)type;
-
+	if (type == STT_FILE || type == STT_SECTION)
+		return 'a';
 
 	if (bind == STB_WEAK && sym->st_value)
 		return 'W';
