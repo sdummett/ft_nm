@@ -59,6 +59,8 @@ bool isuppercase(int c);
 bool islowercase(int ch);
 bool isalphabet(int ch);
 int tolowercase(int ch);
+bool isadigit(int ch);
+bool isalphanum(int ch);
 
 // get_symbol_type.c
 char get_symbol_type(void *f, Elf64_Sym *sym);

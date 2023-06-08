@@ -9,6 +9,7 @@ static void print_global_only(Elf64_Sym_Nm *node);
 static void print_all(Elf64_Sym_Nm *node);
 static void print_without_debug(Elf64_Sym_Nm *node);
 static void merge_sort(Elf64_Sym_Nm **head);
+static void reverse_linked_list(Elf64_Sym_Nm** head);
 
 void print_symtab_entries(void *f, Elf64_Shdr * symtab_hdr, char *opts) {
 	uint32_t symtab_entries_num = symtab_hdr->sh_size / symtab_hdr->sh_entsize;
@@ -37,6 +38,8 @@ void print_symtab_entries(void *f, Elf64_Shdr * symtab_hdr, char *opts) {
 	if (is_option_set(opts, OPTION_P) == false)
 		merge_sort(&head);
 	// SORT: if -r is set     -> reverse the sort order
+	if (is_option_set(opts, OPTION_R))
+		reverse_linked_list(&head);
 	tmp = head;
 	while (tmp) {
 		if (is_option_set(opts, OPTION_U))
@@ -111,7 +114,7 @@ static int find_non_alphabet_index(const char* str) {
 	return -1; // Return -1 if all characters are alphabets
 }
 
-static char* remove_underscores(const char* str) {
+static char* remove_non_alphanum(const char* str) {
 	const size_t len = stringlen(str);
 	char* result = (char*)malloc((len + 1) * sizeof(char));
 	if (result == NULL)
@@ -119,7 +122,7 @@ static char* remove_underscores(const char* str) {
 
 	size_t i, j = 0;
 	for (i = 0; i < len; ++i) {
-		if (isalphabet(str[i])) {
+		if (isalphanum(str[i])) {
 			result[j] = tolowercase(str[i]);
 			++j;
 		}
@@ -129,9 +132,26 @@ static char* remove_underscores(const char* str) {
 	return result;
 }
 
+static void reverse_linked_list(Elf64_Sym_Nm** head) {
+    Elf64_Sym_Nm *prev = NULL;
+    Elf64_Sym_Nm *current = *head;
+    Elf64_Sym_Nm *next = NULL;
+
+    while (current != NULL) {
+        next = current->next;  // Store the next node
+        current->next = prev;  // Reverse the link
+
+        // Move pointers one position ahead
+        prev = current;
+        current = next;
+    }
+
+    *head = prev;  // Update the head to point to the new first node (last node after reversal)
+}
+
 static int strcmp_nm(const char* s1, const char* s2) {
-	char* s1_modified = remove_underscores(s1);
-	char* s2_modified = remove_underscores(s2);
+	char* s1_modified = remove_non_alphanum(s1);
+	char* s2_modified = remove_non_alphanum(s2);
 
 	int result = stringcmp(s1_modified, s2_modified);
 

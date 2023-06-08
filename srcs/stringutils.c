@@ -564,6 +564,18 @@ bool isalphabet(int ch) {
 
 /* --------------------------------------------------- */
 
+bool isadigit(int ch) {
+	return (ch >= '0' && ch <= '9');
+}
+
+/* --------------------------------------------------- */
+
+bool isalphanum(int ch) {
+	return (isalphabet(ch) || isadigit(ch));
+}
+
+/* --------------------------------------------------- */
+
 int	tolowercase(int ch) {
 	if (ch >= 'A' && ch <= 'Z')
 		return (ch + ' ');
