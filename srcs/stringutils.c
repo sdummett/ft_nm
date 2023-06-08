@@ -549,3 +549,25 @@ void sprintfmt(char *str, char *fmt, ...) {
 bool isuppercase(int c) {
 	return (c >= 'A' && c <= 'Z');
 }
+
+/* --------------------------------------------------- */
+
+bool islowercase(int ch) {
+	return (ch >= 'a' && ch <= 'z');
+}
+
+/* --------------------------------------------------- */
+
+bool isalphabet(int ch) {
+	return (isuppercase(ch) || islowercase(ch));
+}
+
+/* --------------------------------------------------- */
+
+int	tolowercase(int ch) {
+	if (ch >= 'A' && ch <= 'Z')
+		return (ch + ' ');
+	if (ch < -1)
+		return (ch + 256);
+	return (ch);
+}

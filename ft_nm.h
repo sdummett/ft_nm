@@ -56,6 +56,9 @@ char *utohex(unsigned long nb);
 char *utoascii(unsigned int n);
 char *itoascii(int n);
 bool isuppercase(int c);
+bool islowercase(int ch);
+bool isalphabet(int ch);
+int tolowercase(int ch);
 
 // get_symbol_type.c
 char get_symbol_type(void *f, Elf64_Sym *sym);
