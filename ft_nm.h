@@ -15,6 +15,13 @@
 #include <stdio.h>
 #include <string.h>
 
+typedef struct Elf64_Sym_Nm {
+	char *symbol_name;
+	char *symbol_value;
+	char symbol_type;
+	struct Elf64_Sym_Nm *next;
+} Elf64_Sym_Nm;
+
 // stringutils.c
 int stringlen(const char *str);
 void printerror(const char* message);
