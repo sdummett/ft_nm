@@ -38,7 +38,7 @@ void print_symtab_entries(void *f, Elf64_Shdr * symtab_hdr, char *opts) {
 	if (is_option_set(opts, OPTION_P) == false)
 		merge_sort(&head);
 	// SORT: if -r is set     -> reverse the sort order
-	if (is_option_set(opts, OPTION_R))
+	if (is_option_set(opts, OPTION_R) && is_option_set(opts, OPTION_P) == false)
 		reverse_linked_list(&head);
 	tmp = head;
 	while (tmp) {

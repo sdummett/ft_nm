@@ -1,7 +1,6 @@
 #include "ft_nm.h"
 
 void help(char *progname, int fd) {
-	// stderr
 	printfmt(fd, "Usage: %s: [option(s)] [file(s)]\n", progname);
 	printfmt(fd, "List symbols in [file(s)] (a.out by default).\n");
 	printfmt(fd, "The options are: \n");
@@ -22,7 +21,23 @@ int get_nb_files(int ac, char **av) {
 	return count;
 }
 
-void process_file(char *filename, char *opts) {
+bool is_regular_file(struct stat *sb) {
+	return ((sb->st_mode & S_IFMT) == S_IFREG);
+}
+
+bool is_elf_format(Elf64_Ehdr *ehdr) {
+	if (ehdr->e_ident[EI_MAG0] != 0x7f)
+		return false;
+	else if (ehdr->e_ident[EI_MAG1] != 'E')
+		return false;
+	else if (ehdr->e_ident[EI_MAG2] != 'L')
+		return false;
+	else if (ehdr->e_ident[EI_MAG3] != 'F')
+		return false;
+	return true;
+}
+
+void process_file(char *filename, char *opts, bool print_filename) {
 	int fd = open(filename, O_RDONLY);
 	if (fd == -1) {
 		printerror(filename);
@@ -33,16 +48,34 @@ void process_file(char *filename, char *opts) {
 
 	if (fstat(fd, &sb) == -1) {
 		printerror("fstat");
+		close(fd);
+		return;
+	}
+	if (is_regular_file(&sb) == false) {
+		printfmt(STDERR_FILENO, "%s: Not a regular file\n", filename);
+		close(fd);
 		return;
 	}
 
 	void *f = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
 	if (f == MAP_FAILED) {
 		printerror("mmap");
+		close(fd);
 		return;
 	}
 
 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)f;
+
+	if (is_elf_format(ehdr) == false) {
+		printfmt(STDERR_FILENO, "%s: file format not recognized\n", filename);
+		munmap(f, sb.st_size);
+		close(fd);
+		return;
+	}
+
+	if (print_filename)
+		printfmt(STDOUT_FILENO, "\n%s:\n", filename);
+
 	//	debug_elf_header(*ehdr);
 
 	for (int i = 0; i < ehdr->e_shnum; i++)
@@ -62,18 +95,7 @@ int main(int ac, char **av) {
 	char opts = 0;
 	get_opt(ac, av, &opts);
 
-	// if (is_option_set(&opts, OPTION_A))
-	// 	printfmt(STDERR_FILENO, "OPTION A SET\n");
-	// if (is_option_set(&opts, OPTION_G))
-	// 	printfmt(STDERR_FILENO, "OPTION G SET\n");
-	// if (is_option_set(&opts, OPTION_P))
-	// 	printfmt(STDERR_FILENO, "OPTION P SET\n");
-	// if (is_option_set(&opts, OPTION_R))
-	// 	printfmt(STDERR_FILENO, "OPTION R SET\n");
-	// if (is_option_set(&opts, OPTION_U))
-	// 	printfmt(STDERR_FILENO, "OPTION U SET\n");
 	if (is_option_set(&opts, OPTION_H)) {
-		// printfmt(STDERR_FILENO, "OPTION_H SET\n");
 		help(*av, STDOUT_FILENO);
 		return 0;
 	}
@@ -84,14 +106,16 @@ int main(int ac, char **av) {
 
 	int nb_files = get_nb_files(ac, av);
 	if (nb_files == 0) {
-		process_file("a.out", &opts);
+		process_file("a.out", &opts, false);
 		return 0;
 	}
+
+	bool print_filename = nb_files > 1 ? true : false;
 
 	for (int i = 1; i < ac; i++) {
 		if (av[i][0] == '\0')
 			continue;
-		process_file(av[i], &opts);
+		process_file(av[i], &opts, print_filename);
 	}
 
 	return 0;
