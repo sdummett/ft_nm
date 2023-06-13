@@ -23,6 +23,11 @@
 #define OPTION_H (1 << 5)
 #define OPTION_ERROR (1 << 6)
 
+#define IS_X64 0
+#define IS_X32 1
+#define IS_NOT_ELF 2
+#define IS_NOT_SUPPORTED 3
+
 // Define the structure to hold the option data
 typedef struct {
     const char short_opt;
@@ -35,6 +40,11 @@ typedef struct Elf64_Sym_Nm {
 	char symbol_type;
 	struct Elf64_Sym_Nm *next;
 } Elf64_Sym_Nm;
+
+//check_elf_format.c
+int check_elf_header(Elf64_Ehdr *ehdr, off_t st_size);
+bool check_x64_elf(Elf64_Ehdr *ehdr, off_t st_size);
+bool check_x32_elf(Elf32_Ehdr *ehdr, off_t st_size);
 
 // get_opt.c
 void get_opt(int ac, char **av, char *opts);
@@ -62,11 +72,18 @@ int tolowercase(int ch);
 bool isadigit(int ch);
 bool isalphanum(int ch);
 
-// get_symbol_type.c
+// get_symbol_infos.c
+Elf64_Sym_Nm *get_symbol_infos(void *f, Elf64_Shdr *symtab_hdr, Elf64_Sym *symbol);
+char* get_symbol_value(Elf64_Sym *sym);
 char get_symbol_type(void *f, Elf64_Sym *sym);
+char *get_symbol_name_x64(void *f, Elf64_Shdr *symtab_hdr, uint32_t st_name);
+Elf64_Sym *get_symbol_x64(void *f, Elf64_Shdr *symtab_hdr, uint32_t idx);
+char *get_symbol_name_x32(void *f, Elf32_Shdr *symtab_hdr, uint32_t st_name);
+Elf32_Sym *get_symbol_x32(void *f, Elf32_Shdr *symtab_hdr, uint32_t idx);
 
 // get_section_header.c
-Elf64_Shdr *get_section_header(void *f, int idx);
+Elf64_Shdr *get_section_header_x64(void *f, int idx);
+Elf32_Shdr *get_section_header_x32(void *f, int idx);
 
 //print_symtab_entries.c
 void print_symtab_entries(void *, Elf64_Shdr *, char *);

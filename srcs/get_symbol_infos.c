@@ -1,5 +1,41 @@
 #include "ft_nm.h"
 
+Elf64_Sym_Nm *get_symbol_infos(void *f, Elf64_Shdr *symtab_hdr, Elf64_Sym *symbol) {
+	Elf64_Sym_Nm *new = malloc(sizeof(Elf64_Sym_Nm));
+	new->symbol_name = get_symbol_name_x64(f, symtab_hdr, symbol->st_name);
+	new->symbol_value = get_symbol_value(symbol);
+	new->symbol_type = get_symbol_type(f, symbol);
+	new->next = NULL;
+	return new;
+}
+
+char* get_symbol_value(Elf64_Sym *sym) {
+	if (sym->st_shndx == SHN_UNDEF)
+		return stringdup("                ");
+	char *str = malloc(128);
+	*str = '\0';
+	sprintfmt(str, "%0lx", sym->st_value);
+	return str;
+}
+
+char *get_symbol_name_x64(void *f, Elf64_Shdr *symtab_hdr, uint32_t st_name) {
+	Elf64_Shdr *strtab_hdr = get_section_header_x64(f, symtab_hdr->sh_link);
+	return f + strtab_hdr->sh_offset + st_name;
+}
+
+char *get_symbol_name_x32(void *f, Elf32_Shdr *symtab_hdr, uint32_t st_name) {
+	Elf32_Shdr *strtab_hdr = get_section_header_x32(f, symtab_hdr->sh_link);
+	return f + strtab_hdr->sh_offset + st_name;
+}
+
+Elf64_Sym *get_symbol_x64(void *f, Elf64_Shdr *symtab_hdr, uint32_t idx) {
+	return f + (symtab_hdr->sh_offset + (idx * symtab_hdr->sh_entsize));
+}
+
+Elf32_Sym *get_symbol_x32(void *f, Elf32_Shdr *symtab_hdr, uint32_t idx) {
+	return f + (symtab_hdr->sh_offset + (idx * symtab_hdr->sh_entsize));
+}
+
 char get_symbol_type(void *f, Elf64_Sym *sym) {
 	int bind = ELF64_ST_BIND(sym->st_info);
 	int type = ELF64_ST_TYPE(sym->st_info);
@@ -18,8 +54,8 @@ char get_symbol_type(void *f, Elf64_Sym *sym) {
 	}
 	
 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)f;
-	Elf64_Shdr *shdr = get_section_header(f, sym->st_shndx);
-	Elf64_Shdr *shstrtb = get_section_header(f, ehdr->e_shstrndx);
+	Elf64_Shdr *shdr = get_section_header_x64(f, sym->st_shndx);
+	Elf64_Shdr *shstrtb = get_section_header_x64(f, ehdr->e_shstrndx);
 	char *section_name = (char *)(f + shstrtb->sh_offset + shdr->sh_name);
 	(void)ehdr; (void)shdr;
 

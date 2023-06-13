@@ -25,18 +25,6 @@ bool is_regular_file(struct stat *sb) {
 	return ((sb->st_mode & S_IFMT) == S_IFREG);
 }
 
-bool is_elf_format(Elf64_Ehdr *ehdr) {
-	if (ehdr->e_ident[EI_MAG0] != 0x7f)
-		return false;
-	else if (ehdr->e_ident[EI_MAG1] != 'E')
-		return false;
-	else if (ehdr->e_ident[EI_MAG2] != 'L')
-		return false;
-	else if (ehdr->e_ident[EI_MAG3] != 'F')
-		return false;
-	return true;
-}
-
 void process_file(char *filename, char *opts, bool print_filename) {
 	int fd = open(filename, O_RDONLY);
 	if (fd == -1) {
@@ -51,6 +39,7 @@ void process_file(char *filename, char *opts, bool print_filename) {
 		close(fd);
 		return;
 	}
+
 	if (is_regular_file(&sb) == false) {
 		printfmt(STDERR_FILENO, "%s: Not a regular file\n", filename);
 		close(fd);
@@ -66,7 +55,16 @@ void process_file(char *filename, char *opts, bool print_filename) {
 
 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)f;
 
-	if (is_elf_format(ehdr) == false) {
+	int arch = check_elf_header(ehdr, sb.st_size);
+	if (arch == IS_NOT_SUPPORTED) {
+		printfmt(STDERR_FILENO, "%s: elf type not supported\n", filename);
+		munmap(f, sb.st_size);
+		close(fd);
+		return;
+	}
+	else if (arch == IS_NOT_ELF ||
+		(arch == IS_X32 && !check_x32_elf((Elf32_Ehdr *)ehdr, sb.st_size)) ||
+		(arch == IS_X64 && !check_x64_elf(ehdr, sb.st_size))) {
 		printfmt(STDERR_FILENO, "%s: file format not recognized\n", filename);
 		munmap(f, sb.st_size);
 		close(fd);
@@ -78,11 +76,9 @@ void process_file(char *filename, char *opts, bool print_filename) {
 
 	//	debug_elf_header(*ehdr);
 
-	for (int i = 0; i < ehdr->e_shnum; i++)
-	{
-		Elf64_Shdr *symtab_hdr = get_section_header(f, i);
-		if (symtab_hdr->sh_type == SHT_SYMTAB)
-		{
+	for (int i = 0; i < ehdr->e_shnum; i++) {
+		Elf64_Shdr *symtab_hdr = get_section_header_x64(f, i);
+		if (symtab_hdr->sh_type == SHT_SYMTAB) {
 			// debug_elf_section_header(*symtab_hdr);
 			print_symtab_entries(f, symtab_hdr, opts);
 		}
