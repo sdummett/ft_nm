@@ -53,9 +53,8 @@ void process_file(char *filename, char *opts, bool print_filename) {
 		return;
 	}
 
-	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)f;
 
-	int arch = check_elf_header(ehdr, sb.st_size);
+	int arch = check_elf_header((Elf64_Ehdr *)f, sb.st_size);
 	if (arch == IS_NOT_SUPPORTED) {
 		printfmt(STDERR_FILENO, "%s: elf type not supported\n", filename);
 		munmap(f, sb.st_size);
@@ -63,8 +62,8 @@ void process_file(char *filename, char *opts, bool print_filename) {
 		return;
 	}
 	else if (arch == IS_NOT_ELF ||
-		(arch == IS_X32 && !check_x32_elf((Elf32_Ehdr *)ehdr, sb.st_size)) ||
-		(arch == IS_X64 && !check_x64_elf(ehdr, sb.st_size))) {
+		(arch == IS_X32 && !check_x32_elf((Elf32_Ehdr *)f, sb.st_size)) ||
+		(arch == IS_X64 && !check_x64_elf((Elf64_Ehdr *)f, sb.st_size))) {
 		printfmt(STDERR_FILENO, "%s: file format not recognized\n", filename);
 		munmap(f, sb.st_size);
 		close(fd);
@@ -76,11 +75,25 @@ void process_file(char *filename, char *opts, bool print_filename) {
 
 	//	debug_elf_header(*ehdr);
 
-	for (int i = 0; i < ehdr->e_shnum; i++) {
-		Elf64_Shdr *symtab_hdr = get_section_header_x64(f, i);
-		if (symtab_hdr->sh_type == SHT_SYMTAB) {
-			// debug_elf_section_header(*symtab_hdr);
-			print_symtab_entries(f, symtab_hdr, opts);
+
+	if (arch == IS_X64) {
+		Elf64_Ehdr *ehdr = (Elf64_Ehdr *)f;
+		for (int i = 0; i < ehdr->e_shnum; i++) {
+			Elf64_Shdr *symtab_hdr = get_section_header_x64(f, i);
+			if (symtab_hdr->sh_type == SHT_SYMTAB) {
+				// debug_elf_section_header(*symtab_hdr);
+				print_symtab_entries_x64(f, symtab_hdr, opts);
+			}
+		}
+	}
+	else if (arch == IS_X32) {
+		Elf32_Ehdr *ehdr = (Elf32_Ehdr *)f;
+		for (int i = 0; i < ehdr->e_shnum; i++) {
+			Elf32_Shdr *symtab_hdr = get_section_header_x32(f, i);
+			if (symtab_hdr->sh_type == SHT_SYMTAB) {
+				// debug_elf_section_header(*symtab_hdr);
+				print_symtab_entries_x32(f, symtab_hdr, opts);
+			}
 		}
 	}
 	munmap(f, sb.st_size);

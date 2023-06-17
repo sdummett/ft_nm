@@ -19,7 +19,8 @@ CFLAGS = -Wall -Wextra -Werror
 #       SOURCES                                                                #
 # **************************************************************************** #
 SRCS = srcs/main.c \
-       srcs/print_symtab_entries.c \
+       srcs/print_symtab_entries_x64.c \
+       srcs/print_symtab_entries_x32.c \
        srcs/get_section_header.c \
 	   srcs/get_symbol_infos.c \
        srcs/debug_elf_header.c \

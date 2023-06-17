@@ -7,7 +7,7 @@ static void print_without_debug(Elf64_Sym_Nm *node);
 static void merge_sort(Elf64_Sym_Nm **head);
 static void reverse_linked_list(Elf64_Sym_Nm** head);
 
-void print_symtab_entries(void *f, Elf64_Shdr * symtab_hdr, char *opts) {
+void print_symtab_entries_x64(void *f, Elf64_Shdr * symtab_hdr, char *opts) {
 	uint32_t symtab_entries_num = symtab_hdr->sh_size / symtab_hdr->sh_entsize;
 
 	Elf64_Sym_Nm *head = NULL;
@@ -16,11 +16,11 @@ void print_symtab_entries(void *f, Elf64_Shdr * symtab_hdr, char *opts) {
 		Elf64_Sym *symbol = get_symbol_x64(f, symtab_hdr, i);
 
 		if (head == NULL) {
-			head = get_symbol_infos(f, symtab_hdr, symbol);
+			head = get_symbol_infos_x64(f, symtab_hdr, symbol);
 			tmp = head;
 		}
 		else {
-			tmp->next = get_symbol_infos(f, symtab_hdr, symbol);
+			tmp->next = get_symbol_infos_x64(f, symtab_hdr, symbol);
 			tmp = tmp->next;
 		}
 

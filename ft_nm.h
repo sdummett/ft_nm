@@ -41,6 +41,13 @@ typedef struct Elf64_Sym_Nm {
 	struct Elf64_Sym_Nm *next;
 } Elf64_Sym_Nm;
 
+typedef struct Elf32_Sym_Nm {
+	char *symbol_name;
+	char *symbol_value;
+	char symbol_type;
+	struct Elf32_Sym_Nm *next;
+} Elf32_Sym_Nm;
+
 //check_elf_format.c
 int check_elf_header(Elf64_Ehdr *ehdr, off_t st_size);
 bool check_x64_elf(Elf64_Ehdr *ehdr, off_t st_size);
@@ -73,9 +80,13 @@ bool isadigit(int ch);
 bool isalphanum(int ch);
 
 // get_symbol_infos.c
-Elf64_Sym_Nm *get_symbol_infos(void *f, Elf64_Shdr *symtab_hdr, Elf64_Sym *symbol);
-char* get_symbol_value(Elf64_Sym *sym);
-char get_symbol_type(void *f, Elf64_Sym *sym);
+Elf64_Sym_Nm *get_symbol_infos_x64(void *f, Elf64_Shdr *symtab_hdr, Elf64_Sym *symbol);
+Elf32_Sym_Nm *get_symbol_infos_x32(void *f, Elf32_Shdr *symtab_hdr, Elf32_Sym *symbol);
+
+char* get_symbol_value_x64(Elf64_Sym *sym);
+char* get_symbol_value_x32(Elf32_Sym *sym);
+char get_symbol_type_x64(void *f, Elf64_Sym *sym);
+char get_symbol_type_x32(void *f, Elf32_Sym *sym);
 char *get_symbol_name_x64(void *f, Elf64_Shdr *symtab_hdr, uint32_t st_name);
 Elf64_Sym *get_symbol_x64(void *f, Elf64_Shdr *symtab_hdr, uint32_t idx);
 char *get_symbol_name_x32(void *f, Elf32_Shdr *symtab_hdr, uint32_t st_name);
@@ -85,8 +96,11 @@ Elf32_Sym *get_symbol_x32(void *f, Elf32_Shdr *symtab_hdr, uint32_t idx);
 Elf64_Shdr *get_section_header_x64(void *f, int idx);
 Elf32_Shdr *get_section_header_x32(void *f, int idx);
 
-//print_symtab_entries.c
-void print_symtab_entries(void *, Elf64_Shdr *, char *);
+//print_symtab_entries_x64.c
+void print_symtab_entries_x64(void *, Elf64_Shdr *, char *);
+
+//print_symtab_entries_x32.c
+void print_symtab_entries_x32(void *, Elf32_Shdr *, char *);
 
 // debug_elf_header.c
 void debug_elf_header(Elf64_Ehdr);
