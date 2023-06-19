@@ -20,10 +20,11 @@ To run ft_nm, use the following command:
 
 Replace [options] with any of the following optional flags:
 
-    -a: Display all symbols, including local symbols.
-    -g: Display only external symbols.
-    -u: Display only undefined symbols.
-    -r: Sort the symbols in reverse order.
-    -p: Do not sort the symbols, display in the order they appear in the binary.
+    -a, --debug-syms       Display all symbols, including local symbols.
+    -g, --extern-only      Display only external symbols.
+    -u, --undefined-only   Display only undefined symbols.
+    -r, --reverse-sort     Sort the symbols in reverse order.
+    -p, --no-sort          Do not sort the symbols, display in the order they appear in the binary.
+    -h, --help             Display this information
 
 Replace <binary_file> with the path to the ELF binary you want to analyze.
