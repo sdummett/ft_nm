@@ -76,13 +76,14 @@ void process_file(char *filename, char *opts, bool print_filename) {
 	//	debug_elf_header(*ehdr);
 
 
+	int symbols_nb = 0;
 	if (arch == IS_X64) {
 		Elf64_Ehdr *ehdr = (Elf64_Ehdr *)f;
 		for (int i = 0; i < ehdr->e_shnum; i++) {
 			Elf64_Shdr *symtab_hdr = get_section_header_x64(f, i);
 			if (symtab_hdr->sh_type == SHT_SYMTAB) {
 				// debug_elf_section_header(*symtab_hdr);
-				print_symtab_entries_x64(f, symtab_hdr, opts);
+				symbols_nb += print_symtab_entries_x64(f, symtab_hdr, opts);
 			}
 		}
 	}
@@ -92,10 +93,12 @@ void process_file(char *filename, char *opts, bool print_filename) {
 			Elf32_Shdr *symtab_hdr = get_section_header_x32(f, i);
 			if (symtab_hdr->sh_type == SHT_SYMTAB) {
 				// debug_elf_section_header(*symtab_hdr);
-				print_symtab_entries_x32(f, symtab_hdr, opts);
+				symbols_nb += print_symtab_entries_x32(f, symtab_hdr, opts);
 			}
 		}
 	}
+	if (symbols_nb == 0)
+		printfmt(STDERR_FILENO, "%s: no symbols\n", filename);
 	munmap(f, sb.st_size);
 	close(fd);
 }

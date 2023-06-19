@@ -97,10 +97,10 @@ Elf64_Shdr *get_section_header_x64(void *f, int idx);
 Elf32_Shdr *get_section_header_x32(void *f, int idx);
 
 //print_symtab_entries_x64.c
-void print_symtab_entries_x64(void *, Elf64_Shdr *, char *);
+int print_symtab_entries_x64(void *, Elf64_Shdr *, char *);
 
 //print_symtab_entries_x32.c
-void print_symtab_entries_x32(void *, Elf32_Shdr *, char *);
+int print_symtab_entries_x32(void *, Elf32_Shdr *, char *);
 
 // debug_elf_header.c
 void debug_elf_header(Elf64_Ehdr);

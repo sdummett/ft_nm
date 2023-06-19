@@ -7,7 +7,9 @@ static void print_without_debug(Elf32_Sym_Nm *node);
 static void merge_sort(Elf32_Sym_Nm **head);
 static void reverse_linked_list(Elf32_Sym_Nm** head);
 
-void print_symtab_entries_x32(void *f, Elf32_Shdr * symtab_hdr, char *opts) {
+int print_symtab_entries_x32(void *f, Elf32_Shdr * symtab_hdr, char *opts) {
+	if (symtab_hdr->sh_entsize == 0)
+		return 0;
 	uint32_t symtab_entries_num = symtab_hdr->sh_size / symtab_hdr->sh_entsize;
 
 	Elf32_Sym_Nm *head = NULL;
@@ -36,7 +38,9 @@ void print_symtab_entries_x32(void *f, Elf32_Shdr * symtab_hdr, char *opts) {
 	// SORT: if -r is set     -> reverse the sort order
 	if (is_option_set(opts, OPTION_R) && is_option_set(opts, OPTION_P) == false)
 		reverse_linked_list(&head);
+
 	tmp = head;
+	int symbols_nb = 0;
 	while (tmp) {
 		if (is_option_set(opts, OPTION_U))
 			print_undefined_only(tmp);
@@ -51,7 +55,9 @@ void print_symtab_entries_x32(void *f, Elf32_Shdr * symtab_hdr, char *opts) {
 		free(tmp->symbol_value);
 		free(tmp);
 		tmp = head;
+		symbols_nb++;
 	}
+	return symbols_nb;
 }
 
 static void print_undefined_only(Elf32_Sym_Nm *node) {
