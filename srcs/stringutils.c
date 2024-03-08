@@ -393,37 +393,42 @@ void printfmt(int fd, char *fmt, ...) {
 				padding = true;
 				fmt++;
 			}
+			char character;
+			void *pointer;
+			int integer;
+			unsigned int u_integer;
+			unsigned int hexa;
 			switch (*fmt++) {
 				char *s;
 				case 'c':
-					char c = va_arg(var, int);
-					write(fd, &c, 1);
+					character = va_arg(var, int);
+					write(fd, &character, 1);
 					break;
 				case 's':
 					s = va_arg(var, char *);
 					write(fd, s, stringlen(s));
 					break;
 				case 'p':
-					void *p = va_arg(var, char *);
-					s = utohex((unsigned long)p);
+					pointer = va_arg(var, char *);
+					s = utohex((unsigned long)pointer);
 					write(fd, s, stringlen(s));
 					free(s);
 					break;
 				case 'd':
-					int i = va_arg(var, int);
-					s = itoascii(i);
+					integer = va_arg(var, int);
+					s = itoascii(integer);
 					write(fd, s, stringlen(s));
 					free(s);
 					break;
 				case 'u':
-					unsigned int u = va_arg(var, unsigned int);
-					s = utoascii(u);
+					u_integer = va_arg(var, unsigned int);
+					s = utoascii(u_integer);
 					write(fd, s, stringlen(s));
 					free(s);
 					break;
 				case 'x':
-					unsigned int x = va_arg(var, unsigned int);
-					s = utohex((unsigned long)x);
+					hexa = va_arg(var, unsigned int);
+					s = utohex((unsigned long)hexa);
 					write(fd, s, stringlen(s));
 					free(s);
 					break;
@@ -492,38 +497,43 @@ void sprintfmt(char *str, char *fmt, ...) {
 				padding = true;
 				fmt++;
 			}
+			char character[2] = {0};
+			void *pointer;
+			int integer;
+			unsigned int u_integer;
+			unsigned int hexa;
 			switch (*fmt++) {
 				char *s;
 				case 'c':
-					char c[2] = {0};
-					c[0] = va_arg(var, int);
-					stringcat(str, c);
+					// char c[2] = {0};
+					character[0] = va_arg(var, int);
+					stringcat(str, character);
 					break;
 				case 's':
 					s = va_arg(var, char *);
 					stringcat(str, s);
 					break;
 				case 'p':
-					void *p = va_arg(var, char *);
-					s = utohex((unsigned long)p);
+					pointer = va_arg(var, char *);
+					s = utohex((unsigned long)pointer);
 					stringcat(str, s);
 					free(s);
 					break;
 				case 'd':
-					int i = va_arg(var, int);
-					s = itoascii(i);
+					integer = va_arg(var, int);
+					s = itoascii(integer);
 					stringcat(str, s);
 					free(s);
 					break;
 				case 'u':
-					unsigned int u = va_arg(var, unsigned int);
-					s = utoascii(u);
+					u_integer = va_arg(var, unsigned int);
+					s = utoascii(u_integer);
 					stringcat(str, s);
 					free(s);
 					break;
 				case 'x':
-					unsigned int x = va_arg(var, unsigned int);
-					s = utohex((unsigned long)x);
+					hexa = va_arg(var, unsigned int);
+					s = utohex((unsigned long)hexa);
 					stringcat(str, s);
 					free(s);
 					break;

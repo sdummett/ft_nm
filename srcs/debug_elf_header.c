@@ -80,7 +80,6 @@ void debug_elf_header(Elf64_Ehdr ehdr) {
 
 	printfmt(STDOUT_FILENO, "(ABIVERSION: %d) ", ehdr.e_ident[EI_ABIVERSION]);
 	printfmt(STDOUT_FILENO, "(EI_PAD: %d) ", ehdr.e_ident[EI_PAD]);
-	printfmt(STDOUT_FILENO, "(EI_NIDENT: %d)\n", ehdr.e_ident[EI_NIDENT]);
 
 	printfmt(STDOUT_FILENO, "e_type: ");
 	switch(ehdr.e_type) {
