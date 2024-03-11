@@ -62,21 +62,21 @@ int print_symtab_entries_x32(void *f, Elf32_Shdr * symtab_hdr, char *opts) {
 
 static void print_undefined_only(Elf32_Sym_Nm *node) {
 	if (node->symbol_type == 'U' || node->symbol_type == 'w')
-		printfmt(STDOUT_FILENO, "%s %c %s\n", node->symbol_value, node->symbol_type, node->symbol_name);
+		printfmt(STDOUT_FILENO, "%s %c %s\n", node->symbol_value + 8, node->symbol_type, node->symbol_name);
 }
 
 static void print_global_only(Elf32_Sym_Nm *node) {
 	if (isuppercase(node->symbol_type) || node->symbol_type == 'w')
-		printfmt(STDOUT_FILENO, "%s %c %s\n", node->symbol_value, node->symbol_type, node->symbol_name);
+		printfmt(STDOUT_FILENO, "%s %c %s\n", node->symbol_value + 8, node->symbol_type, node->symbol_name);
 }
 
 static void print_all(Elf32_Sym_Nm *node) {
-	printfmt(STDOUT_FILENO, "%s %c %s\n", node->symbol_value, node->symbol_type, node->symbol_name);
+	printfmt(STDOUT_FILENO, "%s %c %s\n", node->symbol_value + 8, node->symbol_type, node->symbol_name);
 }
 
 static void print_without_debug(Elf32_Sym_Nm *node) {
 	if (node->symbol_type != 'a')
-		printfmt(STDOUT_FILENO, "%s %c %s\n", node->symbol_value, node->symbol_type, node->symbol_name);
+		printfmt(STDOUT_FILENO, "%s %c %s\n", node->symbol_value + 8, node->symbol_type, node->symbol_name);
 }
 
 static int find_non_alphabet_index(const char* str) {
