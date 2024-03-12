@@ -2,18 +2,21 @@
 #       TITLE                                                                  #
 # **************************************************************************** #
 NAME = ft_nm
+SHARED_OBJECT = ft_nm.so
 
 # **************************************************************************** #
 #       COMMANDS                                                               #
 # **************************************************************************** #
 CC = cc
-#RM = rm
 
 # **************************************************************************** #
 #       FLAGS                                                                  #
 # **************************************************************************** #
-#RMFLAGS = -rf
+
 CFLAGS = -Wall -Wextra -Werror
+ifeq ($(X32), 1)
+	CFLAGS += -m32
+endif
 
 # **************************************************************************** #
 #       SOURCES                                                                #
@@ -43,10 +46,16 @@ objs/%.o : %.c | $(OBJ_DIRS)
 $(NAME) : $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
+$(SHARED_OBJECT):
+	$(CC) $(SRCS) $(CFLAGS) -I. -fPIC -shared -o $(SHARED_OBJECT)
+
 $(OBJ_DIRS):
 	mkdir -p $@
 
 all: $(NAME)
+
+test:
+	./test-my-nm.sh
 
 debug: CFLAGS += -g3 -DDEBUG
 debug: $(NAME)
@@ -55,7 +64,7 @@ clean:
 	rm -rf objs
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) $(NAME).so
 
 re: fclean all
 
