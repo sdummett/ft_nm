@@ -136,7 +136,7 @@ static int strcmp_nm(const char* s1, const char* s2) {
 	if (result == 0) {
 		int s1_nonalpha = find_non_alphabet_index(s1);
 		int s2_nonalpha = find_non_alphabet_index(s2);
-		if (s1_nonalpha < s2_nonalpha)
+		if (s1_nonalpha <= s2_nonalpha)
 			return -1;
 		return 1;
 	}
