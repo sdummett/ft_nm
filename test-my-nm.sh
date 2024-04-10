@@ -94,6 +94,7 @@ help () {
 	echo -n ${}
 	echo "It simply test your ft_nm output against the real nm."
 	echo "The tester will compile your ft_nm project and use the generated object files and binaries to test."
+        echo "To compile 32 bits objects you need glibc-devel.i686 installed."
 	echo "You must have a 'X32' variable in your Makefile so when its equal to '1' (make X32=1) it generates a 32 bit binary."
 	echo "You must also have a 'ft_nm.so' rule to compile a shared object (make ft_nm.so)."
 	echo "If a test fails, the tester will do a 'file' of the tested binary | object | shared object (ex: file objfile.o)."
