@@ -112,44 +112,44 @@ SUCCESS="TRUE"
 # [SETUP] Creating the directories
 echo "${YELLOW}${BOLD}[SETUP] Setting up the tester.${RESET}"
 
-rm -r testers > /dev/null 2>&1
-mkdir -p testers/binaries/{x64,x32}
-mkdir -p testers/objects/{x64,x32}
-mkdir -p testers/shared-objects/{x64,x32}
+rm -r elfs > /dev/null 2>&1
+mkdir -p elfs/binaries/{x64,x32}
+mkdir -p elfs/objects/{x64,x32}
+mkdir -p elfs/shared-objects/{x64,x32}
 
 # [SETUP] Shared object x64
 make fclean > /dev/null 2>&1
 check_makefile_error "make fclean"
 make ft_nm.so > /dev/null 2>&1
 check_makefile_error "make ft_nm.so"
-cp ft_nm.so testers/shared-objects/x64
+cp ft_nm.so elfs/shared-objects/x64
 
 # [SETUP] Shared object x32
 make fclean > /dev/null 2>&1
 check_makefile_error "make fclean"
 make ft_nm.so X32=1 > /dev/null 2>&1
 check_makefile_error "make ft_nm.so X32=1"
-cp ft_nm.so testers/shared-objects/x32
+cp ft_nm.so elfs/shared-objects/x32
 
 # [SETUP] make x64 {Binaries x64, Binaries x64 stripped, Object files x64}
 make fclean > /dev/null 2>&1
 check_makefile_error "make fclean"
 make > /dev/null 2>&1
 check_makefile_error "make"
-cp objs/srcs/*.o testers/objects/x64
-cp ft_nm testers/binaries/x64
-cp ft_nm testers/binaries/x64/ft_nm-strip
-strip testers/binaries/x64/ft_nm-strip
+cp objs/srcs/*.o elfs/objects/x64
+cp ft_nm elfs/binaries/x64
+cp ft_nm elfs/binaries/x64/ft_nm-strip
+strip elfs/binaries/x64/ft_nm-strip
 
 # [SETUP] make x32 {Binaries x32, Binaries x32 stripped, Object files x32}
 make fclean > /dev/null 2>&1
 check_makefile_error "make fclean"
 make X32=1 > /dev/null 2>&1
 check_makefile_error "make X32=1"
-cp objs/srcs/*.o testers/objects/x32
-cp ft_nm testers/binaries/x32
-cp ft_nm testers/binaries/x32/ft_nm-strip
-strip testers/binaries/x32/ft_nm-strip
+cp objs/srcs/*.o elfs/objects/x32
+cp ft_nm elfs/binaries/x32
+cp ft_nm elfs/binaries/x32/ft_nm-strip
+strip elfs/binaries/x32/ft_nm-strip
 
 
 # [TEST] nm without arguments & without a.out
@@ -168,11 +168,11 @@ rm a.out
 print_result "nm without arguments & with a.out in the cwd"
 
 # [TEST] x64 binary
-diffing "testers/binaries/x64/ft_nm" ""
+diffing "elfs/binaries/x64/ft_nm" ""
 print_result "x64 binary"
 
 # [TEST] x64 binary stripped
-./ft_nm "testers/binaries/x64/ft_nm-strip" 2>&1 | grep -qi "no symbols"
+./ft_nm "elfs/binaries/x64/ft_nm-strip" 2>&1 | grep -qi "no symbols"
 if [ $? -ne 0 ]; then
 	echo "${RED}${BOLD}[FAILED] x64 binary stripped.${RESET}"
 	echo "${YELLOW}[!] The output must have something like 'no symbols' in your ft_nm output.${RESET}"
@@ -181,17 +181,17 @@ else
 fi
 
 # [TEST] x64 object files
-for FILE in testers/objects/x64/*; do
+for FILE in elfs/objects/x64/*; do
 	diffing "$FILE" ""
 done
 print_result "x64 object files"
 
 # [TEST] x32 binary
-diffing "testers/binaries/x32/ft_nm" ""
+diffing "elfs/binaries/x32/ft_nm" ""
 print_result "x32 binary"
 
 # [TEST] x32 binary stripped
-./ft_nm "testers/binaries/x32/ft_nm-strip" 2>&1 | grep -qi "no symbols"
+./ft_nm "elfs/binaries/x32/ft_nm-strip" 2>&1 | grep -qi "no symbols"
 if [ $? -ne 0 ]; then
 	echo "${RED}${BOLD}[FAILED] x32 binary stripped.${RESET}"
 	echo "${YELLOW}[!] The output must have something like 'no symbols' in your ft_nm output.${RESET}"
@@ -200,74 +200,74 @@ else
 fi
 
 # [TEST] x32 object files
-for FILE in testers/objects/x32/*; do
+for FILE in elfs/objects/x32/*; do
 	diffing "$FILE" ""
 done
 print_result "x32 object files"
 
 # [TEST] x64 shared object
-diffing "testers/shared-objects/x64/ft_nm.so" ""
+diffing "elfs/shared-objects/x64/ft_nm.so" ""
 print_result "x64 shared object"
 
 # [TEST] x32 shared object
-diffing "testers/shared-objects/x32/ft_nm.so" ""
+diffing "elfs/shared-objects/x32/ft_nm.so" ""
 print_result "x32 shared object"
 
 # [TEST] x64 binary with option -a
-diffing "testers/binaries/x64/ft_nm" "-a"
+diffing "elfs/binaries/x64/ft_nm" "-a"
 print_result "x64 binary with option -a"
 
 # [TEST] x64 binarywith  option -g
-diffing "testers/binaries/x64/ft_nm" "-g"
+diffing "elfs/binaries/x64/ft_nm" "-g"
 print_result "x64 binary with option -g"
 
 # [TEST] x64 binary with option -u
-diffing "testers/binaries/x64/ft_nm" "-u"
+diffing "elfs/binaries/x64/ft_nm" "-u"
 print_result "x64 binary with option -u"
 
 # [TEST] x64 binary with option -r
-diffing "testers/binaries/x64/ft_nm" "-r"
+diffing "elfs/binaries/x64/ft_nm" "-r"
 print_result "x64 binary with option -r"
 
 # [TEST] x64 binary with option -p
-diffing "testers/binaries/x64/ft_nm" "-p"
+diffing "elfs/binaries/x64/ft_nm" "-p"
 print_result "x64 binary with option -p"
 
 
 # [TEST] x32 binary with option -a
-diffing "testers/binaries/x32/ft_nm" "-a"
+diffing "elfs/binaries/x32/ft_nm" "-a"
 print_result "x32 binary with option -a"
 
 # [TEST] x32 binarywith  option -g
-diffing "testers/binaries/x32/ft_nm" "-g"
+diffing "elfs/binaries/x32/ft_nm" "-g"
 print_result "x32 binary with option -g"
 
 # [TEST] x32 binary with option -u
-diffing "testers/binaries/x32/ft_nm" "-u"
+diffing "elfs/binaries/x32/ft_nm" "-u"
 print_result "x32 binary with option -u"
 
 # [TEST] x32 binary with option -r
-diffing "testers/binaries/x32/ft_nm" "-r"
+diffing "elfs/binaries/x32/ft_nm" "-r"
 print_result "x32 binary with option -r"
 
 # [TEST] x32 binary with option -p
-diffing "testers/binaries/x32/ft_nm" "-p"
+diffing "elfs/binaries/x32/ft_nm" "-p"
 print_result "x32 binary with option -p"
 
 # [TEST] x32 binary with option -a -g
-diffing "testers/binaries/x32/ft_nm" "-a" "-g"
+diffing "elfs/binaries/x32/ft_nm" "-a" "-g"
 print_result "x32 binary with option -a -g"
 
 # [TEST] x32 binary with option -r -u
-diffing "testers/binaries/x32/ft_nm" "-r" "-u"
+diffing "elfs/binaries/x32/ft_nm" "-r" "-u"
 print_result "x32 binary with option -r -u"
 
 # [TEST] x64 binary with option -p -r g
-diffing "testers/binaries/x64/ft_nm" "-p" "-r" -"g"
+diffing "elfs/binaries/x64/ft_nm" "-p" "-r" -"g"
 print_result "x64 binary with option -p -r -g"
 
 # [TEST] x64 binary with option -p -r -g -a
-diffing "testers/binaries/x64/ft_nm" "-p" "-r" "-g" "-a"
+diffing "elfs/binaries/x64/ft_nm" "-p" "-r" "-g" "-a"
 print_result "x64 binary with option -p -r -g -a"
 
 # [CLEANUP]
