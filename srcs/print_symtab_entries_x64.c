@@ -116,7 +116,7 @@ static void reverse_linked_list(Elf64_Sym_Nm** head) {
         next = current->next;  // Store the next node
 
         // The real nm don't reverse same symbol name, we do the same
-        if (next != NULL && strcmp(current->symbol_name, next->symbol_name) == 0) {
+        if (next != NULL && stringcmp(current->symbol_name, next->symbol_name) == 0) {
             current->next = next->next;
             next->next = prev;
             prev = next;
