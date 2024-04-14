@@ -137,6 +137,8 @@ char get_symbol_type_x64(void *f, Elf64_Sym *sym) {
 		return 'd';
 	else if (stringcmp(section_name, ".data.rel.ro") == 0 && bind == STB_LOCAL)
 		return 'd';
+	else if (stringcmp(section_name, ".jcr") == 0 && bind == STB_LOCAL)
+		return 'd';
 
 	// debug
 	// else
@@ -227,6 +229,8 @@ char get_symbol_type_x32(void *f, Elf32_Sym *sym) {
 	else if (stringcmp(section_name, ".got") == 0 && bind == STB_LOCAL)
 		return 'd';
 	else if (stringcmp(section_name, ".data.rel.ro") == 0 && bind == STB_LOCAL)
+		return 'd';
+	else if (stringcmp(section_name, ".jcr") == 0 && bind == STB_LOCAL)
 		return 'd';
 
 	// debug
